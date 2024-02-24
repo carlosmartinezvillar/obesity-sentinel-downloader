@@ -228,7 +228,7 @@ if __name__ == '__main__':
 	tiles       = np.array([s3.split('_')[5] for s3 in filtered_gdf['s3']])
 	remove_mask = np.array([(_==tiles) for _ in remove]).any(axis=0)
 	final_gdf   = filtered_gdf[~remove_mask]
-	print("* Filtered to %i (removed UTM 14,16)" % len(final_gdf))
+	print("* Filtered to %i (removed tiles in UTM 14 & 16)" % len(final_gdf))
 
 	# 3.4 PLOT WITH 6 TILES REMOVED
 	if plot:
@@ -250,7 +250,7 @@ if __name__ == '__main__':
 
 
 	############################################################
-	# III. DOWNLOAD
+	# IV. DOWNLOAD
 	############################################################
 	if download:
 		download_images(final_gdf)
