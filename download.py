@@ -84,8 +84,33 @@ def filter_overlapping(results):
 
 		filtered.append(chosen)
 
-	return gpd.GeoDataFrame(filtered,geometry='geometry').reset_index(drop=True)
+	filtered_gdf =  gpd.GeoDataFrame(filtered,geometry='geometry').reset_index(drop=True)
+	print("* Filtered to %i (keeping laregest area image in tile)" % len(filtered_gdf))
+	# 3.2 PLOT FILTERED
+	# fig, ax = plt.subplots(1,1,figsize=(20,20))
+	# census_tracts.boundary.plot(ax=ax,linewidth=0.2,color='black')
+	# for i,c in enumerate(filtered_gdf.centroid): #tile names
+	# 	rot,tile = filtered_gdf['s3'].iloc[i].split('_')[4:6]
+	# 	date     = filtered_gdf['s3'].iloc[i].split('_')[2].split('T')[0]
+	# 	s = '\n'.join([rot,tile,date])
+	# 	ax.text(x=c.x,y=c.y,s=s,ha='center',va='center',fontsize=7,color='black')
+	# filtered_gdf.set_crs("EPSG:4326").plot(ax=ax,linewidth=0.2,color='g',alpha=0.25,edgecolor='g')
+	# max_clouds = filtered_gdf['clouds'].max()
+	# avg_clouds = filtered_gdf['clouds'].mean()
+	# ax.set_title("N=%i, mean clouds=%.3f, max clouds=%.3f" % (len(filtered_gdf),avg_clouds,max_clouds))
+	# plt.savefig("./figs/raster_filtered.png")
+	# plt.close()
+	# print("Plot written to './figs/raster_filtered.png'.")
 
+
+	# 3.3 REMOVE FUNNY TILES (UTM 14, 16)
+	remove      = ['T14TQK','T14TQL','T16SBJ','T16SBH','T16SBG','T16SBF','T16SBE']
+	tiles       = np.array([s3.split('_')[5] for s3 in filtered_gdf['s3']])
+	remove_mask = np.array([(_==tiles) for _ in remove]).any(axis=0)
+	final_gdf   = filtered_gdf[~remove_mask]
+	print("* Filtered to %i (removed tiles in UTM 14 & 16)" % len(final_gdf))
+
+	return final_gdf
 
 def download_images(gdf):
 	'''
@@ -203,34 +228,9 @@ if __name__ == '__main__':
 	# III. FILTER RESULTS
 	############################################################
 	# 3.1 FILTER TO NON-OVERLAPPING PRODUCTS
-	filtered_gdf = filter_overlapping(results)
-	print("* Filtered to %i (keeping laregest area image in tile)" % len(filtered_gdf))
+	final_gdf = filter_overlapping(results)
 
-	# 3.2 PLOT FILTERED
-	if plot:
-		fig, ax = plt.subplots(1,1,figsize=(20,20))
-		census_tracts.boundary.plot(ax=ax,linewidth=0.2,color='black')
-		for i,c in enumerate(filtered_gdf.centroid): #tile names
-			rot,tile = filtered_gdf['s3'].iloc[i].split('_')[4:6]
-			date     = filtered_gdf['s3'].iloc[i].split('_')[2].split('T')[0]
-			s = '\n'.join([rot,tile,date])
-			ax.text(x=c.x,y=c.y,s=s,ha='center',va='center',fontsize=7,color='black')
-		filtered_gdf.set_crs("EPSG:4326").plot(ax=ax,linewidth=0.2,color='g',alpha=0.25,edgecolor='g')
-		max_clouds = filtered_gdf['clouds'].max()
-		avg_clouds = filtered_gdf['clouds'].mean()
-		ax.set_title("N=%i, mean clouds=%.3f, max clouds=%.3f" % (len(filtered_gdf),avg_clouds,max_clouds))
-		plt.savefig("./figs/raster_filtered.png")
-		plt.close()
-		print("Plot written to './figs/raster_filtered.png'.")
-
-	# 3.3 REMOVE FUNNY TILES (UTM 14, 16)
-	remove      = ['T14TQK','T14TQL','T16SBJ','T16SBH','T16SBG','T16SBF','T16SBE']
-	tiles       = np.array([s3.split('_')[5] for s3 in filtered_gdf['s3']])
-	remove_mask = np.array([(_==tiles) for _ in remove]).any(axis=0)
-	final_gdf   = filtered_gdf[~remove_mask]
-	print("* Filtered to %i (removed tiles in UTM 14 & 16)" % len(final_gdf))
-
-	# 3.4 PLOT WITH 6 TILES REMOVED
+	# 3.4 PLOT FILTERED+6 TILES REMOVED
 	if plot:
 		fig, ax = plt.subplots(1,1,figsize=(20,20))
 		census_tracts.boundary.plot(ax=ax,linewidth=0.2,color='black')

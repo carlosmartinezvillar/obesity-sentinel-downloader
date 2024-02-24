@@ -6,7 +6,7 @@
 
 **docker image**
 
-A docker image with all the previously mentioned packages pre-installed is available [here](https://docker.io).
+A docker image with all the previously mentioned packages pre-installed is available [here](https://hub.docker.com/repository/docker/cimartinezvillar/obesity-downloader/general).
 
 ## How-to
 
