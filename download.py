@@ -144,7 +144,7 @@ def download_images(gdf):
 		print("Getting RGB bands...")
 		bands_dir = '/'.join([safe_src,"GRANULE",subdir,"IMG_DATA","R10m"])
 		proc2     = sp.run([
-			"rclone","copy","-P","--dry-run",bands_dir,out_dir,
+			"rclone","copy","-P",bands_dir,out_dir,
 			"--include","*02_10m.jp2",
 			"--include","*03_10m.jp2",
 			"--include","*04_10m.jp2"
