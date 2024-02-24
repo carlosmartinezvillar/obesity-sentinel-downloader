@@ -11,8 +11,13 @@ import subprocess as sp
 import argparse
 
 # DATA_DIR = '/sentinel-images'
-DATA_DIR = './data'
+DATA_DIR = os.getenv('DATA_DIR')
+if DATA_DIR is None:
+	DATA_DIR = './data'
 REMOTE   = 'esa:'
+
+parser = argparse.ArgumentParser(description='meh...')
+
 ################################################################################
 # HELPER FUNCTIONS
 ################################################################################
@@ -111,6 +116,7 @@ def filter_overlapping(results):
 	print("* Filtered to %i (removed tiles in UTM 14 & 16)" % len(final_gdf))
 
 	return final_gdf
+
 
 def download_images(gdf):
 	'''

@@ -1,0 +1,85 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: obesity-pod
+spec:
+  containers:
+
+    #container name/image
+    - name: obesity-downloader-0
+      image: docker.io/cimartinezvillar/obesity-downloader
+      workingDir: /
+      env:
+        - name: DATA_DIR
+          value: /obesity-images
+
+        - name: RCLONE_CONFIG_NRP_TYPE
+          value: s3
+        - name: RCLONE_CONFIG_NRP_PROVIDER
+          value: Ceph
+        - name: RCLONE_CONFIG_NRP_USER
+          value: cimartinezvillar
+        - name: RCLONE_CONFIG_NRP_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              key: access  
+              name: rconfig
+        - name: RCLONE_CONFIG_NRP_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              key: secret
+              name: rconfig
+        - name: RCLONE_CONFIG_NRP_ENDPOINT
+          value: http://rook-ceph-rgw-centrals3.rook-central
+
+        - name: RCLONE_CONFIG_ESA_TYPE
+          value: s3
+        - name: RCLONE_CONFIG_ESA_PROVIDER
+          value: Other
+        - name: RCLONE_CONFIG_ESA_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              key: esa_access
+              name: rconfig
+        - name: RCLONE_CONFIG_ESA_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              key: esa_secret
+              name: rconfig
+        - name: RCLONE_CONFIG_ESA_ENDPOINT
+          value: s3.dataspace.copernicus.eu
+
+      #container limit/request
+      resources:
+        limits:
+          memory: 8Gi
+          cpu: 4
+        requests:
+          memory: 8Gi
+          cpu: 4
+
+      #container vol mounts
+      volumeMounts:
+        - mountPath: /obesity-images
+          name: obesity-vol-mount
+          readOnly: false
+
+        # - mountPath: /config/rclone/rclone.conf
+        #   subPath: rclone.conf
+        #   name: sec
+
+      #execute after init
+      command: ["sh", "-c", "sleep infinity"]
+
+
+  volumes:
+    #pvc
+    - name: obesity-vol-mount
+      persistentVolumeClaim:
+        claimName: obesity-pvc
+
+    # #secret
+    # - name: sec
+    #   secret:
+    #     secretName: rconfigs
+    #     optional: false
