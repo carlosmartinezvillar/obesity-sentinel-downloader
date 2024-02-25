@@ -22,13 +22,11 @@ In addition to the following Python libraries:
 
 ### Docker image
 
-A ready-to-use docker image with all the previously mentioned libraries pre-installed is available [here]
-(https://hub.docker.com/repository/docker/cimartinezvillar/obesity-downloader/general).
+A ready-to-use docker image with all the previously mentioned libraries pre-installed is available [here](https://hub.docker.com/repository/docker/cimartinezvillar/obesity-downloader/general).
 
 ### ESA Dataspace Access Keys
 
-Products are downloaded via S3 from ESA's Dataspace ecosystem, which requires access keys. Instructions on how to do this can be found [here]
-(https://documentation.dataspace.copernicus.eu/APIs/S3.html).
+Products are downloaded via S3 from ESA's Dataspace ecosystem, which requires access keys. Instructions on how to do this can be found [here](https://documentation.dataspace.copernicus.eu/APIs/S3.html).
 
 By default `rclone` will read the credentials set in `/root/.config/rclone/rclone.conf`. If you're using this file to set up the credentials, then the settings for your remote called `esa` should look like this:
 
