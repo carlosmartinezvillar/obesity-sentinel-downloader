@@ -14,9 +14,8 @@ import argparse
 DATA_DIR = os.getenv('DATA_DIR')
 if DATA_DIR is None:
 	DATA_DIR = './data'
-REMOTE   = 'esa:'
 
-parser = argparse.ArgumentParser(description='meh...')
+REMOTE   = 'esa:'
 
 ################################################################################
 # HELPER FUNCTIONS
@@ -175,7 +174,7 @@ def get_chips():
 ################################################################################
 if __name__ == '__main__':
 
-	plot     = False
+	plot     = True
 	download = True
 
 	############################################################
