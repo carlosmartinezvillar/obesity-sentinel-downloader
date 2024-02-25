@@ -13,25 +13,6 @@ spec:
         - name: DATA_DIR
           value: /obesity-images
 
-        - name: RCLONE_CONFIG_NRP_TYPE
-          value: s3
-        - name: RCLONE_CONFIG_NRP_PROVIDER
-          value: Ceph
-        - name: RCLONE_CONFIG_NRP_USER
-          value: cimartinezvillar
-        - name: RCLONE_CONFIG_NRP_ACCESS_KEY_ID
-          valueFrom:
-            secretKeyRef:
-              key: access  
-              name: rconfig
-        - name: RCLONE_CONFIG_NRP_SECRET_ACCESS_KEY
-          valueFrom:
-            secretKeyRef:
-              key: secret
-              name: rconfig
-        - name: RCLONE_CONFIG_NRP_ENDPOINT
-          value: http://rook-ceph-rgw-centrals3.rook-central
-
         - name: RCLONE_CONFIG_ESA_TYPE
           value: s3
         - name: RCLONE_CONFIG_ESA_PROVIDER
