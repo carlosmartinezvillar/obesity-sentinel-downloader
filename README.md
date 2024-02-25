@@ -4,7 +4,7 @@ The [download.py](./download.py) script searches, filters, and downloads the Sen
 
 ## Prerequisites
 
-### Libraries
+### 1. Libraries
 
 In order to run [download.py](./download.py) the following are needed: 
 
@@ -20,11 +20,7 @@ In addition to the following Python libraries:
 * `shapely==2.0.1`
 * `requests`
 
-### Docker image
-
-A ready-to-use docker image with all the previously mentioned libraries pre-installed is available [here](https://hub.docker.com/repository/docker/cimartinezvillar/obesity-downloader/general).
-
-### ESA Dataspace Access Keys
+### 2. ESA Dataspace Access Keys
 
 Products are downloaded via S3 from ESA's Dataspace ecosystem, which requires access keys. Instructions on how to do this can be found [here](https://documentation.dataspace.copernicus.eu/APIs/S3.html).
 
@@ -39,8 +35,12 @@ secret_access_key = <my_secret_access_key>
 endpoint = s3.dataspace.copernicus.eu
 ```
 
-Otherwise `rclone` will use env variables following the convention `RCLONE_CONFIG_REMOTE_VARIABLE`. Where `REMOTE` is the name of the remote (`ESA` for above) and `VARIABLE` each variable needed (e.g.: `RCLONE_CONFIG_ESA_TYPE=S3`, `RCLONE_CONFIG_ESA_SECRET_ACCESS_KEY=<access_key>`).
+Otherwise `rclone` will use env variables following the convention `RCLONE_CONFIG_REMOTE_VARIABLE`. Where `REMOTE` is the name of the remote (`ESA` for above) and `VARIABLE` each variable needed (e.g.: `RCLONE_CONFIG_ESA_TYPE=S3`, `RCLONE_CONFIG_ESA_SECRET_ACCESS_KEY=<access_key>`). Environment variables is one way to pass these when creating a pod/job in nrp nautilus.
 
+
+### Docker image
+
+A ready-to-use docker image with all the previously mentioned libraries pre-installed is available [here](https://hub.docker.com/repository/docker/cimartinezvillar/obesity-downloader/general).
 
 ## How-to
 To run, do
