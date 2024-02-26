@@ -45,10 +45,6 @@ spec:
           name: obesity-vol-mount
           readOnly: false
 
-        # - mountPath: /config/rclone/rclone.conf
-        #   subPath: rclone.conf
-        #   name: sec
-
       #execute after init
       command: ["sh", "-c", "sleep infinity"]
 
@@ -58,9 +54,3 @@ spec:
     - name: obesity-vol-mount
       persistentVolumeClaim:
         claimName: obesity-pvc
-
-    # #secret
-    # - name: sec
-    #   secret:
-    #     secretName: rconfigs
-    #     optional: false

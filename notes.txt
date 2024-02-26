@@ -1,0 +1,12 @@
+notes.txt
+---------
+1. Read final.csv to get census tracts.
+2. Joined census tracts into a single polygon for whole state
+3. Reduced vertices in MO polygon to 54. This was needed to have shorter URL to search.
+4. Built URL and launched search for polygon in ESA server via OpenSearch api.
+5. Search returned 187 products
+6. For each tile, selected the product with the largest area. If two products had the same (largest) area, the one with the lowest cloud percentage was selected.
+7. After this 40 products were left.
+8. After visually inspecting the layout of the Sentinel-2 products, 7 products were removed. These products were in tiles that had large overlaps with other products. They actually corresponded to UTM zones 14 and 16, so the remaining were only products in UTM 15.
+9. 33 products remained.
+10. Downloaded products into a nautilus PVC
