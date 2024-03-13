@@ -24,7 +24,7 @@ In addition to the following Python libraries:
 
 Products are downloaded via S3 from ESA's Dataspace ecosystem, which requires access keys. Instructions on how to do this can be found [here](https://documentation.dataspace.copernicus.eu/APIs/S3.html).
 
-By default `rclone` will read the credentials set in `/root/.config/rclone/rclone.conf`. If you're using this file to set up the credentials, then the settings for your remote called `esa` should look like this:
+By default `rclone` will read the credentials set in `/root/.config/rclone/rclone.conf`. If you're using this file to set up the credentials, then you can set the settings for your remote (called `esa`) to this:
 
 ```
 [esa]
@@ -41,6 +41,8 @@ Otherwise `rclone` will use env variables following the convention `RCLONE_CONFI
 ### Docker image
 
 A ready-to-use docker image with all the previously mentioned libraries pre-installed is available [here](https://hub.docker.com/repository/docker/cimartinezvillar/obesity-downloader/general).
+
+To use it, pass an `rclone.conf` file to the container as described above, or alternatively set the environment variables `RCLONE_CONFIG_ESA_TYPE`, `RCLONE_CONFIG_ESA_PROVIDER`, `RCLONE_CONFIG_ESA_ACCESS_KEY_ID`,`RCLONE_CONFIG_ESA_SECRET_ACCESS_KEY`, `RCLONE_CONFIG_ESA_ENDPOINT`. Of course, you can replace the name of your remote (`_ESA_` in this case) for whatever you want but will need to change the `REMOTE` global variable inside [`download.py`](./download.py).
 
 ## How-to
 To run, do
