@@ -156,26 +156,28 @@ def download_images(gdf):
 		scl_src   = '/'.join([safe_src,"GRANULE",subdir,"IMG_DATA","R20m",scl_file])
 		proc3     = sp.run(["rclone","copy","-P",scl_src,out_dir])
 
-		# 4. Download metadata/xml file
-		print("\nGetting XML/Metadata file...")
-		xml_src = '/'.join([safe_src,"MTD_MSIL2A.xml"])
-		proc4   = sp.run(["rclone","copy","-P",xml_src,out_dir])
+		# # 4. Download metadata/xml file
+		# print("\nGetting XML/Metadata file...")
+		# xml_src = '/'.join([safe_src,"MTD_MSIL2A.xml"])
+		# proc4   = sp.run(["rclone","copy","-P",xml_src,out_dir])
 
-
-def get_chips_worker(src_reader):
-	pass
-
-
-def get_chips():
-	pass
 
 ################################################################################
 # MAIN #
 ################################################################################
 if __name__ == '__main__':
 
-	plot     = True
-	download = True
+	parser = argparse.ArgumentParser(
+		prog='ObesityDownloader (download.py)',
+		description='Sentinel-2 image downloader',
+		epilog='help at https://github.com/carlosmartinezvillar/obesity-sentinel-downloader')
+
+	parser.add_argument('-d','--download',action='store_true',default=False,dest='download')
+	parser.add_argument('-p','--plot',action='store_true',default=False,dest='plot')
+	args = parser.parse_args()
+
+	plot     = args.plot
+	download = args.download
 
 	############################################################
 	# I. SET SEARCH AREA
@@ -196,7 +198,7 @@ if __name__ == '__main__':
 		fp.write(mo_simple_str)
 	print("WKT simple search area polygon written to 'query_wkt.txt'.")
 
-	# 1.3 PLOT THE SIMPLIFIED POLYGON
+	# 1.3 PLOT THE SIMPLIFIED POLYGON <------------------------------------------------------------- PLOT
 	if plot:
 		fig, ax = plt.subplots()
 		ax.set_aspect('equal')
@@ -215,7 +217,7 @@ if __name__ == '__main__':
 	results = search_and_parse(mo_simple_str)
 	print("-"*60)	
 
-	# 2.2 PLOT PRODUCTS RETURNED
+	# 2.2 PLOT PRODUCTS RETURNED <------------------------------------------------------------------ PLOT
 	if plot:
 		fig, ax = plt.subplots(1,1,figsize=(20,20))
 		results['geometry'].plot(ax=ax,color='green',alpha=0.25,linewidth=0.2,edgecolor='black')
@@ -235,20 +237,22 @@ if __name__ == '__main__':
 	# 3.1 FILTER TO NON-OVERLAPPING PRODUCTS
 	final_gdf = filter_overlapping(results)
 
-	# 3.4 PLOT FILTERED+6 TILES REMOVED
+	# 3.4 PLOT FILTERED+6 TILES REMOVED <----------------------------------------------------------- PLOT
 	if plot:
 		fig, ax = plt.subplots(1,1,figsize=(20,20))
 		census_tracts.boundary.plot(ax=ax,linewidth=0.2,color='black')
 		for i,c in enumerate(final_gdf.centroid):
 			rot,tile = final_gdf['s3'].iloc[i].split('_')[4:6]
 			date     = final_gdf['s3'].iloc[i].split('_')[2].split('T')[0]
-			s = '\n'.join([rot,tile,date])
-			ax.text(x=c.x,y=c.y,s=s,ha='center',va='center',fontsize=7,color='black')	
+			date     = '/'.join([date[4:6],date[6:],date[0:4]])
+			s = '\n'.join([tile,date])
+			ax.text(x=c.x,y=c.y,s=s,ha='center',va='center',fontsize=14,color='black',weight='bold')	
 		final_gdf.set_crs("EPSG:4326").plot(ax=ax,linewidth=0.2,color='g',alpha=0.25,edgecolor='g')
 		max_clouds = final_gdf['clouds'].max()
 		avg_clouds = final_gdf['clouds'].mean()
 		N          = len(final_gdf)
-		ax.set_title("N=%i, mean clouds=%.3f, max clouds=%.3f" % (N,avg_clouds,max_clouds))			
+		ax.set_title("N=%i, mean clouds=%.3f, max clouds=%.3f" % (N,avg_clouds,max_clouds),fontsize=24)
+		ax.set_axis_off()		
 		plt.savefig("./figs/cleaned_final.png")
 		plt.close()
 		print("Plot written to './figs/cleaned_final.png'.")	
