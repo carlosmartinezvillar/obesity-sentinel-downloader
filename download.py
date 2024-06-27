@@ -251,7 +251,7 @@ if __name__ == '__main__':
 		max_clouds = final_gdf['clouds'].max()
 		avg_clouds = final_gdf['clouds'].mean()
 		N          = len(final_gdf)
-		ax.set_title("N=%i, mean clouds=%.3f, max clouds=%.3f" % (N,avg_clouds,max_clouds),fontsize=24)
+		ax.set_title("N=%i, Mean Clouds=%.3f%%, Max Clouds=%.3f%%" % (N,avg_clouds,max_clouds),fontsize=24,weight='bold')
 		ax.set_axis_off()		
 		plt.savefig("./figs/cleaned_final.png")
 		plt.close()
