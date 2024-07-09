@@ -1,0 +1,54 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fat-gpu-pod
+spec:
+
+  containers:
+    - name: obesity-processor
+      image: docker.io/cimartinezvillar/obesity-sentinel:cuda
+      imagePullPolicy: IfNotPresent
+      workingDir: /
+      
+      env:
+        - name: DATA_DIR
+          value: /obesity-s2-images
+
+      resources:
+        limits:
+          memory: 32Gi
+          cpu: 16
+          nvidia.com/gpu: 1
+        requests:
+          memory: 32Gi
+          cpu: 16
+          nvidia.com/gpu: 1
+
+      volumeMounts:
+        - mountPath: /obesity-s2-images
+          name: obesity-vol-mount
+          readOnly: false
+
+        # - mountPath: /dev/shm
+          # name: dshm
+
+      command: ["sleep", "infinity"]
+
+  volumes:
+    - name: obesity-vol-mount
+      persistentVolumeClaim:
+        claimName: obesity-pvc-clean
+
+    # - name: dshm
+    #   emptyDir:
+    #     medium: Memory
+
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+            - key: nvidia.com/gpu.product
+              operator: In
+              values:
+                - NVIDIA-GeForce-RTX-2080-Ti

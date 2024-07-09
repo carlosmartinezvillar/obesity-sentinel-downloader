@@ -10,9 +10,11 @@ spec:
       image: docker.io/cimartinezvillar/obesity-downloader
       workingDir: /
       env:
+        #WORKDIR
         - name: DATA_DIR
           value: /obesity-images
 
+        # ESA
         - name: RCLONE_CONFIG_ESA_TYPE
           value: s3
         - name: RCLONE_CONFIG_ESA_PROVIDER
@@ -29,6 +31,25 @@ spec:
               name: rconfig
         - name: RCLONE_CONFIG_ESA_ENDPOINT
           value: s3.dataspace.copernicus.eu
+
+        # NRP
+        - name: RCLONE_CONFIG_NRP_TYPE
+          value: s3
+        - name: RCLONE_CONFIG_NRP_PROVIDER
+          value: Other
+        - name: RCLONE_CONFIG_NRP_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              key: access
+              name: rconfig
+        - name: RCLONE_CONFIG_NRP_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              key: secret
+              name: rconfig
+        - name: RCLONE_CONFIG_NRP_ENDPOINT
+          value: https://s3-central.nrp-nautilus.io
+
 
       #container limit/request
       resources:
@@ -48,9 +69,7 @@ spec:
       #execute after init
       command: ["sh", "-c", "sleep infinity"]
 
-
   volumes:
-    #pvc
     - name: obesity-vol-mount
       persistentVolumeClaim:
-        claimName: obesity-pvc
+        claimName: obesity-pvc-clean
