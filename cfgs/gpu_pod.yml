@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: fat-gpu-pod
+  name: obs-gpu-pod
 spec:
 
   containers:
@@ -12,7 +12,25 @@ spec:
       
       env:
         - name: DATA_DIR
-          value: /obesity-s2-images
+          value: /data
+
+        # NRP
+        - name: RCLONE_CONFIG_NRP_TYPE
+          value: s3
+        - name: RCLONE_CONFIG_NRP_PROVIDER
+          value: Other
+        - name: RCLONE_CONFIG_NRP_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              key: access
+              name: rconfig
+        - name: RCLONE_CONFIG_NRP_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              key: secret
+              name: rconfig
+        - name: RCLONE_CONFIG_NRP_ENDPOINT
+          value: https://s3-central.nrp-nautilus.io
 
       resources:
         limits:
@@ -25,12 +43,12 @@ spec:
           nvidia.com/gpu: 1
 
       volumeMounts:
-        - mountPath: /obesity-s2-images
+        - mountPath: /obesity-images
           name: obesity-vol-mount
           readOnly: false
 
-        # - mountPath: /dev/shm
-          # name: dshm
+        - mountPath: /dev/shm
+          name: dshm
 
       command: ["sleep", "infinity"]
 
@@ -39,9 +57,12 @@ spec:
       persistentVolumeClaim:
         claimName: obesity-pvc-clean
 
-    # - name: dshm
-    #   emptyDir:
-    #     medium: Memory
+    - name: dshm
+      emptyDir:
+        medium: Memory
+
+  nodeSelector:
+    nautilus.io/disktype: nvme
 
   affinity:
     nodeAffinity:

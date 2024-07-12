@@ -12,7 +12,7 @@ spec:
       env:
         #WORKDIR
         - name: DATA_DIR
-          value: /obesity-images
+          value: /data
 
         # ESA
         - name: RCLONE_CONFIG_ESA_TYPE
