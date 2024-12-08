@@ -9,6 +9,7 @@ import numpy as np
 import multiprocessing as mp
 import subprocess as sp
 import argparse
+from datetime import datetime
 
 # DATA_DIR = '/sentinel-images'
 DATA_DIR = os.getenv('DATA_DIR')
@@ -244,14 +245,20 @@ if __name__ == '__main__':
 		for i,c in enumerate(final_gdf.centroid):
 			rot,tile = final_gdf['s3'].iloc[i].split('_')[4:6]
 			date     = final_gdf['s3'].iloc[i].split('_')[2].split('T')[0]
-			date     = '/'.join([date[4:6],date[6:],date[0:4]])
-			s = '\n'.join([tile,date])
+			# date     = '/'.join([date[4:6],date[6:],date[0:4]])
+			year     = int(date[0:4])
+			month    = int(date[4:6])
+			day      = int(date[6:])
+			formatted_date = datetime(year,month,day).strftime("%B %d, %Y")
+			s = '\n'.join([tile,formatted_date])
 			ax.text(x=c.x,y=c.y,s=s,ha='center',va='center',fontsize=14,color='black',weight='bold')	
 		final_gdf.set_crs("EPSG:4326").plot(ax=ax,linewidth=0.2,color='g',alpha=0.25,edgecolor='g')
 		max_clouds = final_gdf['clouds'].max()
 		avg_clouds = final_gdf['clouds'].mean()
 		N          = len(final_gdf)
-		ax.set_title("N=%i, Mean Clouds=%.3f%%, Max Clouds=%.3f%%" % (N,avg_clouds,max_clouds),fontsize=24,weight='bold')
+		# ax.set_title("Number of tiles=%i, mean cloud coverage=%.3f%%, maximum cloud coverage=%.3f%%" % (N,avg_clouds,max_clouds),fontsize=24,weight='bold')
+		title = f"Number of tiles={N}\nMean cloud coverage={avg_clouds:.3f}%; maximum cloud coverage={max_clouds:.3f}%"
+		ax.set_title(title,fontsize=24,weight='bold')
 		ax.set_axis_off()		
 		plt.savefig("./figs/cleaned_final.png")
 		plt.close()
